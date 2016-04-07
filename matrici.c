@@ -3,12 +3,14 @@
 
 int rows= 0;
 int cols= 0;
-int* tab;
+float* tab;
 
 void intab();
 void printab();
 void gauss(int i, int j);
-int colsum();
+int notnull(int i, int j);
+void rowswap(int i);
+void rowdux(int i, int j, int r);
 
 int main(int argc, char* argv[])
 {
@@ -18,13 +20,11 @@ int main(int argc, char* argv[])
     if((rows=atoi(argv[1]))<=0 || (cols=atoi(argv[2]))<=0)
       { printf("Valori non ammessi:\n  %s (int_righe) (int_colonne)\n", argv[0]); return -1; }
 
-  int local[rows][cols];
+  float local[rows][cols];
   tab= local[0];
   
   intab();
-  printab();
   gauss(0,0);
-  printab();
 
   return 0;
 }
@@ -49,24 +49,61 @@ void printab()
   for(int r= 0; r< rows; r++)
     {
       for(int c= 0; c< cols; c++)
-	printf("%d ", tab[c+r*cols]);
-      puts("");
+	printf("%.2g\t", tab[c+r*cols]);
+      puts("\n");
     }
+  puts("");
 }
 
 void gauss(int i, int j)
 {
-  if(i!=rows && j!=cols)
+  printab();
+  if(i+1<rows && j+1<cols)
     {
-      if(!colsum(j))
-	gauss(i, j-1);
+      if(notnull(i,j)==rows)
+	gauss(i,j+1);
+      else
+	{
+	  if(!tab[j+i*cols])
+	    {
+	      rowswap(notnull(i+1,j));
+	      gauss(i,j);
+	    }
+	  else
+	    if(notnull(i+1,j)!=rows)
+	      {
+		rowdux(i,j,notnull(i+1,j));
+		gauss(i,j);
+	      }
+	    else
+	      gauss(i+1,j+1);
+	}
     }
 }
 
-int colsum(int j)
+int notnull(int i, int j)
 {
-  int ret= 0;
-  for(int r= j; r<rows; r++)
-    ret+= tab[r*cols];
-  return ret;
+  int r;
+  for(r= i; r<rows; r++)
+    if(tab[j+r*cols])
+      break;
+  return r;
+}
+
+void rowswap(int i)
+{
+  float temp;
+  for(int x=0; x<cols; x++)
+    {
+      temp= tab[x];
+      tab[x]= tab[i*cols+x];
+      tab[i*cols+x]= temp;
+    }
+}
+
+void rowdux(int i, int j, int r)
+{
+  float lambda= tab[j+r*cols]/tab[j+i*cols];
+  for(; j<cols; j++)
+    tab[j+r*cols]-= lambda*tab[j+i*cols];
 }
