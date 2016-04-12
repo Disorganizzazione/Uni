@@ -9,7 +9,7 @@ void intab();
 void printab();
 void gauss(int i, int j);
 int notnull(int i, int j);
-void rowswap(int i);
+void rowswap(int i, int s);
 void rowdux(int i, int j, int r);
 
 int main(int argc, char* argv[])
@@ -66,7 +66,7 @@ void gauss(int i, int j)
 	{
 	  if(!tab[j+i*cols])
 	    {
-	      rowswap(notnull(i+1,j));
+	      rowswap(i,notnull(i+1,j));
 	      gauss(i,j);
 	    }
 	  else
@@ -90,14 +90,14 @@ int notnull(int i, int j)
   return r;
 }
 
-void rowswap(int i)
+void rowswap(int i, int s)
 {
   float temp;
   for(int x=0; x<cols; x++)
     {
-      temp= tab[x];
-      tab[x]= tab[i*cols+x];
-      tab[i*cols+x]= temp;
+      temp= tab[x+i*cols];
+      tab[x+i*cols]= tab[x+s*cols];
+      tab[x+s*cols]= temp;
     }
 }
 
