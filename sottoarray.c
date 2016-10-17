@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <limits.h>
 
+int dayone(int* arr, int len);
+int afterthought(int* arr, int len);
+
 int main(int argc, char *argv[]){
 
   int len= argc-1;
@@ -10,15 +13,44 @@ int main(int argc, char *argv[]){
   for(int i= 0; i < len; i++)
     arr[i]= atoi(argv[i+1]);
 
+  puts("\ndayone() = O(n^2)");
+
+  dayone(arr,len);
+
+  puts("\nafterthought() = O(n)");
+  
+  printf("max: %d\n",afterthought(arr, len));
+
+  return 0;
+}
+
+int afterthought(int* arr, int len){
+
+  int ret= arr[0];
+  int las= ret;
+  
+  for(int i=1; i<len; i++){
+    if(las > 0)
+      las+= arr[i];
+    else
+      las= arr[i];
+    if(las > ret)
+      ret= las;
+  }
+  
+  return ret;
+}
+
+int dayone(int* arr, int len){
+
   int par= len%2? 0: 1;
   int ret= INT_MIN;
   int str= (len-1)/2;
   int end= str +par;
-  int mid= str + 1;
   int tot= arr[str];
   int lef= 0;
   int rig= 0;
-
+  
   printf("%d,%d\n",str,end);
   if(par)
     tot+= arr[end];
@@ -27,12 +59,12 @@ int main(int argc, char *argv[]){
     ret= tot;
   if(par){
     lef= arr[str];
-    printf("left: %d ", lef);
+    printf("%d,%d: %d ",str,end,lef);
     if(lef > ret)
       ret= lef;
     else{
       rig= tot-lef;
-      printf("right: %d", rig);
+      printf("%d,%d: %d",str,end,rig);
       if(rig > ret)
 	ret= rig;
     }
@@ -51,7 +83,7 @@ int main(int argc, char *argv[]){
       ret= tot;   
     lef= 0;
     
-    for(int i= str; i <= mid ; i++){
+    for(int i= str; i < end ; i++){
       
       lef+= arr[i];
       printf("left: %d ", lef);
@@ -69,5 +101,7 @@ int main(int argc, char *argv[]){
     str--;
     end++;
   }
-  printf("\n[%d]\n",ret);
+
+  return ret;
+
 }
