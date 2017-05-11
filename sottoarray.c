@@ -21,6 +21,8 @@ int main(int argc, char *argv[]){
   
   printf("max: %d\n",afterthought(arr, len));
 
+  printf("\ndivide et impera O(n)\nmax:%d\n\n",divetimp(arr,0,len-1));
+
   return 0;
 }
 
